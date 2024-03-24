@@ -1,0 +1,32 @@
+.header {
+    width: 100%;
+    height: auto;
+    display: grid;
+
+
+
+    & h1 {
+        font-size: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 100;
+        text-align: center;
+    }
+
+
+    &__overview {
+        width: 40%;
+        height: auto;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        font-weight: 200;
+        color: #4a4a4a;
+        line-height: 24px;
+        place-self: center;
+
+
+
+        @media screen and (max-width: 480px) {
+            width: 90%;
+        }
+    }
+}
