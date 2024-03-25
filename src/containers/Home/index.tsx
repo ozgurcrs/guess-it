@@ -18,6 +18,7 @@ export const Home: FC = () => {
   const handleJoinRoom = () => {
     setIsOpenModal(true);
   };
+
   const createRoom = async () => {
     const roomId = getRandomCode();
     setJoinCode(roomId);
@@ -34,11 +35,15 @@ export const Home: FC = () => {
   const handleOnClick = () => {
     if (guestRoom.length) {
       socket.emit("roomId", guestRoom);
-      navigate("game-board", { state: { roomCode: guestRoom } });
+      navigate("game-board", {
+        state: { roomCode: guestRoom, status: "invited" },
+      });
     }
   };
   const handleCreatePlay = () => {
-    navigate("game-board", { state: { roomCode: joinCode } });
+    navigate("game-board", {
+      state: { roomCode: joinCode, status: "created" },
+    });
   };
 
   return (

@@ -11,8 +11,9 @@ export const GameBoard: FC = () => {
   const { socket } = useContext(SocketContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const { roomCode } = location.state;
+  const { roomCode, status } = location.state;
   const [userId, setUserId] = useState<string>("");
+  const [isActiveUser, setIsActiveUser] = useState<string>("created");
   const [game, setGame] = useState<any>({
     isCompleted: false,
     message: "",
@@ -40,8 +41,9 @@ export const GameBoard: FC = () => {
   useEffect(() => {
     socket.on("gameStatus", (data: any) => {
       console.log(data);
+      setIsActiveUser(data.isActiveUser);
+
       if (data.status) {
-        console.log("Buraya giriyor");
         setGame({
           isCompleted: true,
           message: "Kaybettin",
@@ -70,14 +72,13 @@ export const GameBoard: FC = () => {
         status: true,
         room: roomCode,
         userId: userId,
+        isActiveUser: isActiveUser === "created" ? "invited" : "created",
       });
 
       setGame({
         isCompleted: true,
         message: "Kazandın",
       });
-
-      console.log(game);
 
       userNumber.split("").forEach((_, index: number) => {
         if (Math.floor(index / 3) + 1 === findRow) {
@@ -102,13 +103,15 @@ export const GameBoard: FC = () => {
         status: false,
         room: roomCode,
         userId: userId,
+        isActiveUser: isActiveUser === "created" ? "invited" : "created",
       });
+
+      setIsActiveUser(isActiveUser === "created" ? "invited" : "created");
     }
   };
 
   const repeatGame = () => {
     navigate("/");
-    console.log(game);
   };
 
   return (
@@ -119,7 +122,7 @@ export const GameBoard: FC = () => {
           <button onClick={repeatGame}>Tekrar Başla</button>
         </div>
       )}
-      <h3>{myBrainNumber}</h3>
+      {/* <h3>{myBrainNumber}</h3> */}
       <p>{userId}</p>
       <div className="game-board__wrapper">
         {Array.from({ length: 15 }).map((_, index: number) => {
@@ -131,12 +134,13 @@ export const GameBoard: FC = () => {
                 ref={(ref) => (inputRefs.current[index] = ref)}
                 maxLength={1}
                 data-testid={`input-test-id-${inputId}`}
-                disabled={index > inputId}
+                disabled={index > inputId || isActiveUser !== status}
               />
             </div>
           );
         })}
       </div>
+      {isActiveUser !== status && <h3>Rakip Bekleniyor...</h3>}
     </div>
   );
 };

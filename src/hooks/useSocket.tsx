@@ -5,9 +5,7 @@ interface IuseSocket {
 }
 
 export const useSocket = (): IuseSocket => {
-  const socket = io(
-    "https://socket-test-8sry4fu89-ozgurcrs-projects.vercel.app"
-  );
+  const socket = io("https://socket-io-test-840f33815de2.herokuapp.com/");
 
   return {
     socket,
