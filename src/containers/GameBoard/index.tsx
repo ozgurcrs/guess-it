@@ -64,7 +64,7 @@ export const GameBoard: FC = () => {
     const userData = userNumber.split("").slice(-3);
     const brainNumber = myBrainNumber.split("");
 
-    if (userData.length !== 2) {
+    if (userData.length !== 3) {
       return false;
     }
 
