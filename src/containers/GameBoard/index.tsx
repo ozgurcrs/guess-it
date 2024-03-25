@@ -61,6 +61,7 @@ export const GameBoard: FC = () => {
   };
 
   const checkedGame = () => {
+    console.log("checked game e girdi");
     const userData = userNumber.split("").slice(-3);
     const brainNumber = myBrainNumber.split("");
 
