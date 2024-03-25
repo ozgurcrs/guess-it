@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const GameBoard: FC = () => {
   const [myBrainNumber, setMyBrainNumber] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userNumber, setUserNumber] = useState("");
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const { socket } = useContext(SocketContext);
@@ -72,6 +71,7 @@ export const GameBoard: FC = () => {
         status: true,
         room: roomCode,
         userId: userId,
+        number: userNumber,
         isActiveUser: isActiveUser === "created" ? "invited" : "created",
       });
 
