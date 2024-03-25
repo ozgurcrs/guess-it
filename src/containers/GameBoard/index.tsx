@@ -30,17 +30,7 @@ export const GameBoard: FC = () => {
   }, []);
 
   useEffect(() => {
-    setInputId((num) => num + 1);
-    const isFullInput = (inputId - 1) % 3 === 0;
-
-    if (isFullInput) {
-      checkedGame();
-    }
-  }, [userNumber]);
-
-  useEffect(() => {
     socket.on("gameStatus", (data: any) => {
-      console.log(data);
       setIsActiveUser(data.isActiveUser);
 
       if (data.status) {
@@ -53,27 +43,28 @@ export const GameBoard: FC = () => {
   }, [socket]);
 
   const handleChange = (value: string, index: number) => {
-    console.log(value, index);
-    console.log(userNumber);
+    setUserNumber((number) => {
+      const newValue = number + value;
 
-    setUserNumber((number) => number + value);
+      const isFullInput = newValue.split("").slice(-3);
 
-    const userData = userNumber.split("").slice(-3);
-    if (userData.length !== 3) {
-      inputRefs.current[index + 1]?.focus();
-    }
+      console.log(isFullInput);
+
+      if (isFullInput.length % 3 === 0 && (index + 1) % 3 === 0) {
+        checkedGame(isFullInput);
+      }
+
+      return newValue;
+    });
+
+    inputRefs.current[index + 1]?.focus();
   };
 
-  const checkedGame = () => {
-    const userData = userNumber.split("").slice(-3);
+  const checkedGame = (value: any) => {
     const brainNumber = myBrainNumber.split("");
 
-    if (userData.length !== 3) {
-      return false;
-    }
-
-    const isCompleted = userData.every(
-      (num, index) => brainNumber[index] === num
+    const isCompleted = value.every(
+      (num: any, index: number) => brainNumber[index] === num
     );
 
     if (isCompleted) {
@@ -133,7 +124,7 @@ export const GameBoard: FC = () => {
           <button onClick={repeatGame}>Tekrar Başla</button>
         </div>
       )}
-      {/* <h3>{myBrainNumber}</h3> */}
+      <h3>{myBrainNumber}</h3>
       <p>{userId}</p>
       <div className="game-board__wrapper">
         {Array.from({ length: 15 }).map((_, index: number) => {
@@ -141,11 +132,11 @@ export const GameBoard: FC = () => {
             <div key={index}>
               <input
                 onChange={(e) => handleChange(e.target.value, index)}
-                type="text"
+                type="number"
                 ref={(ref) => (inputRefs.current[index] = ref)}
                 maxLength={1}
                 data-testid={`input-test-id-${inputId}`}
-                disabled={index > inputId || isActiveUser !== status}
+                disabled={isActiveUser !== status}
               />
             </div>
           );
