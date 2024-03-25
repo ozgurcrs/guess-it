@@ -5,9 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const GameBoard: FC = () => {
   const [myBrainNumber, setMyBrainNumber] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userNumber, setUserNumber] = useState("");
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const [inputId, setInputId] = useState<number>(0);
   const { socket } = useContext(SocketContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,10 +48,10 @@ export const GameBoard: FC = () => {
 
       const isFullInput = newValue.split("").slice(-3);
 
-      setInputId(index);
-
       if (isFullInput.length % 3 === 0 && (index + 1) % 3 === 0) {
-        checkedGame(isFullInput);
+        const getRow = newValue.split("").length % 3;
+
+        checkedGame(newValue, isFullInput, getRow);
       }
 
       return newValue;
@@ -60,7 +60,7 @@ export const GameBoard: FC = () => {
     inputRefs.current[index + 1]?.focus();
   };
 
-  const checkedGame = (value: any) => {
+  const checkedGame = (allNumbers: any, value: any, row: any) => {
     const brainNumber = myBrainNumber.split("");
 
     const isCompleted = value.every(
@@ -68,8 +68,6 @@ export const GameBoard: FC = () => {
     );
 
     if (isCompleted) {
-      const findRow = Math.floor(inputId / 3);
-
       socket.emit("user-transfer", {
         status: true,
         room: roomCode,
@@ -82,13 +80,13 @@ export const GameBoard: FC = () => {
         message: "Kazandın",
       });
 
-      userNumber.split("").forEach((_, index: number) => {
-        if (Math.floor(index / 3) + 1 === findRow) {
+      allNumbers.split("").forEach((_: any, index: number) => {
+        if (Math.floor(index / 3) + 1 === row) {
           inputRefs.current[index]?.classList.add("correct");
         }
       });
     } else {
-      userNumber.split("").forEach((num, index) => {
+      allNumbers.split("").forEach((num: any, index: any) => {
         const hasNumber = myBrainNumber.includes(num);
         if (hasNumber) {
           if (num === myBrainNumber[index % 3]) {
@@ -120,11 +118,12 @@ export const GameBoard: FC = () => {
     <div className="game-board">
       {game.isCompleted && (
         <div className="game-board__completed">
-          <h2>{game.message}</h2>
+          <h2>
+            {game.message} your number is {myBrainNumber}
+          </h2>
           <button onClick={repeatGame}>Tekrar Başla</button>
         </div>
       )}
-      <h3>{myBrainNumber}</h3>
       <p>{userId}</p>
       <div className="game-board__wrapper">
         {Array.from({ length: 15 }).map((_, index: number) => {
@@ -135,7 +134,6 @@ export const GameBoard: FC = () => {
                 type="number"
                 ref={(ref) => (inputRefs.current[index] = ref)}
                 maxLength={1}
-                data-testid={`input-test-id-${inputId}`}
                 disabled={isActiveUser !== status}
               />
             </div>
