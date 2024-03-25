@@ -61,9 +61,12 @@ export const GameBoard: FC = () => {
   };
 
   const checkedGame = () => {
-    console.log("checked game e girdi");
     const userData = userNumber.split("").slice(-3);
     const brainNumber = myBrainNumber.split("");
+
+    if (userData.length !== 3) {
+      return false;
+    }
 
     const isCompleted = userData.every(
       (num, index) => brainNumber[index] === num
