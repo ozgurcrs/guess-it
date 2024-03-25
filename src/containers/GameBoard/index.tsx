@@ -53,6 +53,9 @@ export const GameBoard: FC = () => {
   }, [socket]);
 
   const handleChange = (value: string, index: number) => {
+    console.log(value, index);
+    console.log(userNumber);
+
     setUserNumber((number) => number + value);
     inputRefs.current[index + 1]?.focus();
   };
