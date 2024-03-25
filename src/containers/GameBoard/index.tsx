@@ -57,7 +57,11 @@ export const GameBoard: FC = () => {
     console.log(userNumber);
 
     setUserNumber((number) => number + value);
-    inputRefs.current[index + 1]?.focus();
+
+    const userData = userNumber.split("").slice(-3);
+    if (userData.length !== 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
   };
 
   const checkedGame = () => {
