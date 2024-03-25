@@ -48,7 +48,7 @@ export const GameBoard: FC = () => {
 
       const isFullInput = newValue.split("").slice(-3);
 
-      console.log(isFullInput);
+      setInputId(index);
 
       if (isFullInput.length % 3 === 0 && (index + 1) % 3 === 0) {
         checkedGame(isFullInput);
